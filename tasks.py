@@ -28,7 +28,7 @@ def get_cid(base_url,
                     port=db_port)
     gm_db = c[db_name]
     gm_tickers = gm_db[coll_name]
-
+    print "working on", ticker
     request_result = requests.get(base_url % ticker)
     regex_result = regex.search(request_result.text)
 
