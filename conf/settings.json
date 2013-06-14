@@ -1,0 +1,6 @@
+{
+    "mongo_uri":"kilrog.dyndns.org",
+    "mongo_port":27017,
+
+    "base_uri":"http://www.wikinvest.com/wiki/%s"
+}
