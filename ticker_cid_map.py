@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 from runme import celery
 from tasks import get_cid
-from tasks import derp_add
 #from bs4 import BeautifulSoup
 import re
 import json
