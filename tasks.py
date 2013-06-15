@@ -1,6 +1,7 @@
 from runme import celery
 from pymongo import MongoClient
 import requests
+from time import sleep
 
 @celery.task
 def add(x, y):
@@ -17,7 +18,7 @@ def xsum(numbers):
 @celery.task
 def get_cid(base_url,
             ticker,
-            regex,
+            cid_regex,
             db_url,
             db_port=27017,
             db_name='glitch_mob',
@@ -30,12 +31,19 @@ def get_cid(base_url,
     gm_tickers = gm_db[coll_name]
     print "working on", ticker
     request_result = requests.get(base_url % ticker)
-    regex_result = regex.search(request_result.text)
+    regex_result = cid_regex.search(request_result.text)
+
+    sleep(1)
 
     if regex_result:
-        cid = regex_result.group(regex_result_field)
-        gm_tickers.insert({'symb':ticker, 'cid':cid})
+        match_ticker = regex_result.group('ticker')
+        print 'm_t:',match_ticker,'\tt:',ticker
+        if match_ticker == ticker:
+            cid = regex_result.group(regex_result_field)
+            gm_tickers.insert({'symb':ticker, 'cid':cid})
 
-        return (ticker, cid)
+            return (ticker, cid)
+        else:
+            return None
     else:
         return None
