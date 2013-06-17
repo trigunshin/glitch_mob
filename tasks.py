@@ -1,19 +1,12 @@
 from runme import celery
 from pymongo import MongoClient
+from bs4 import BeautifulSoup
 import requests
 from time import sleep
 
 @celery.task
 def add(x, y):
     return x + y
-
-@celery.task
-def mul(x, y):
-    return x * y
-
-@celery.task
-def xsum(numbers):
-    return sum(numbers)
 
 @celery.task
 def get_cid(base_url,
@@ -47,3 +40,27 @@ def get_cid(base_url,
             return None
     else:
         return None
+
+@celery.task
+def get_field_ids(base_url,
+                  cid,
+                  field_group,
+                  db_url,
+                  db_port=27017,
+                  db_name='glitch_mob',
+                  coll_name='fields'):
+    c = MongoClient(host=db_url,
+                    port=db_port)
+    gm_db = c[db_name]
+    coll = gm_db[coll_name]
+    print "working on", cid
+
+    soup = BeautifulSoup(requests.get(base_url % cid).text)
+    for tr in soup.find_all('tr', class_='metric'):
+        f_id = tr['id'].split('-')[0]
+        f_name = tr.find_all('a')[0].text
+        print "fuckmerotten"
+        coll.update({'id':f_id},
+                    {'id':f_id, 'name':f_name, 'category':field_group},
+                    upsert=True)
+    return (True, base_url % cid)

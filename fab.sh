@@ -3,13 +3,10 @@
 apt-get update
 apt-get upgrade -y
 apt-get update
-apt-get install -y screen curl python-pip python-dev
-# git-core python-virtualenv unzip python-setuptools libxml2-dev libxslt-dev
+apt-get install -y screen curl python-pip python-dev libxml2-dev libxslt-dev
+# git-core python-virtualenv unzip python-setuptools
 
-pip install -U pip fabric simplejson celery celery-with-redis requests
-#beautifulsoup4
-
-cd "/vagrant/"
+pip install -U pip fabric simplejson celery celery-with-redis requests pymongo beautifulsoup4 lxml
 
 cp "/vagrant/conf/celeryd.config" "/etc/default/celeryd"
 cp "/vagrant/init.d/celeryd" "/etc/init.d"
@@ -29,4 +26,7 @@ mkdir -p "$CELERY_PID_DIR"
 #touch "$CELERY_PID_FILE"
 chown ubuntu:ubuntu "$CELERY_PID_DIR"
 
-/etc/init.d/celeryd start
+cd "/vagrant/"
+clear;nohup celery worker -l info & &> log.txt
+# why doesn't htis work? who even knows
+#/etc/init.d/celeryd start
