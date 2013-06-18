@@ -27,6 +27,6 @@ mkdir -p "$CELERY_PID_DIR"
 chown ubuntu:ubuntu "$CELERY_PID_DIR"
 
 cd "/vagrant/"
-clear;nohup celery worker -l info & &> log.txt
-# why doesn't htis work? who even knows
-#/etc/init.d/celeryd start
+#clear;nohup celery worker -l info & &> log.txt
+# why doesn't this work? who even knows
+/etc/init.d/celeryd start
