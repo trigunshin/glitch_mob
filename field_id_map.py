@@ -22,7 +22,7 @@ if __name__ == "__main__":
     fields_data = [{'group':'balance_sheet', 'url':args['balance_sheet_field_id_uri']},
                    {'group':'income_statement', 'url':args['income_statement_field_id_uri']},
                    {'group':'cash_flow', 'url':args['cash_flow_field_id_uri']}]
-    for cid in cid_cursor[0:1]:
+    for cid in cid_cursor:
         for field in fields_data:
             print "working on fielddict:",str(field)
             get_field_ids.delay(field['url'],
