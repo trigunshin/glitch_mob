@@ -2,6 +2,7 @@ from runme import celery
 from pymongo import MongoClient
 from bs4 import BeautifulSoup
 import requests
+import json
 from time import sleep
 
 @celery.task
@@ -63,3 +64,19 @@ def get_field_ids(base_url,
                     {'id':f_id, 'name':f_name, 'category':field_group},
                     upsert=True)
     return (True, base_url % cid)
+
+@celery.task
+def process_request(url,
+                     db_url,
+                     db_port=27017,
+                     db_name='glitch_mob',
+                     coll_name='requests'):
+    c = MongoClient(host=db_url,
+                    port=db_port)
+    gm_db = c[db_name]
+    coll = gm_db[coll_name]
+    print "working on", url
+    sleep(1)
+    jtext = requests.get(url).text
+    coll.insert(json.loads(jtext))
+    return (True, url, json)

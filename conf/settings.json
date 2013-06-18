@@ -6,5 +6,7 @@
 
     "balance_sheet_field_id_uri":"http://www.wikinvest.com/wikidata/data/GetCompanyTabHTML.php?companyId=%s&tab=Balance_Sheet&periodType=Quarterly&asOfPeriod=Latest&numberOfPeriods=10",
     "income_statement_field_id_uri":"http://www.wikinvest.com/wikidata/data/GetCompanyTabHTML.php?companyId=%s&tab=Income_Statement&periodType=Quarterly&asOfPeriod=Latest&numberOfPeriods=5",
-    "cash_flow_field_id_uri":"http://www.wikinvest.com/wikidata/data/GetCompanyTabHTML.php?companyId=%s&tab=Cash_Flow_Statement&periodType=Quarterly&asOfPeriod=Latest&numberOfPeriods=5"
+    "cash_flow_field_id_uri":"http://www.wikinvest.com/wikidata/data/GetCompanyTabHTML.php?companyId=%s&tab=Cash_Flow_Statement&periodType=Quarterly&asOfPeriod=Latest&numberOfPeriods=5",
+
+    "ajax_data_uri":"http://www.wikinvest.com/wikidata/data/GetDataSeries.php?companyIds=%s&metricIds=%s"
 }
