@@ -54,12 +54,11 @@ def get_field_ids(base_url,
     gm_db = c[db_name]
     coll = gm_db[coll_name]
     print "working on", cid
-
+    sleep(1)
     soup = BeautifulSoup(requests.get(base_url % cid).text)
     for tr in soup.find_all('tr', class_='metric'):
         f_id = tr['id'].split('-')[0]
         f_name = tr.find_all('a')[0].text
-        print "fuckmerotten"
         coll.update({'id':f_id},
                     {'id':f_id, 'name':f_name, 'category':field_group},
                     upsert=True)
