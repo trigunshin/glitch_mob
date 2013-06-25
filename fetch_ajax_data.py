@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 from runme import celery
 from itertools import islice, chain
-from functools import partial
 from tasks import process_request
 import json
 import requests
@@ -44,18 +43,5 @@ if __name__ == "__main__":
     FID_BATCH_SIZE = 10
     fid_groups = chunk_fids(fids, FID_BATCH_SIZE)
 
-    #urls = get_urls(companies, fid_groups, args['ajax_data_uri'])
-    #url=urls.next()
-    #url
-    #jtext = requests.get(url).text
-    #jobj=json.loads(jtext)
-    #jobj
-
-    """
-    for url in get_urls(companies, fid_groups, args['ajax_data_uri']):
-        print url
-        process_request(url, args['mongo_uri'])
-        break
-    #"""
     for url in get_urls(companies, fid_groups, args['ajax_data_uri']):
         process_request.delay(url, args['mongo_uri'])
