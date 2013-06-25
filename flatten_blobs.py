@@ -52,15 +52,21 @@ for cur in companies:
     cdict[cur['symb']] = cur
 
 #for blob in [b for b in gm_blob_data.find().limit(1)]:
-all_blobs = [b for b in gm_blob_data.find()]
+#all_blobs = [b for b in gm_blob_data.find()]
 print "loaded all blobs to memory, processing tasks..."
 for blob in all_blobs:
+    # company or field failure means there weren't values
+    try:
+        blob_companies = get_blob_companies(blob)
+        blob_fields = get_blob_fields(blob)
+    except AttributeError, e:
+        continue
     insert_blob_data.delay(blob,
-                     get_blob_companies(blob),
-                     get_blob_fields(blob),
-                     field_dict,
-                     cdict,
-                     args['mongo_uri'])
+                           blob_companies,
+                           blob_fields,
+                           field_dict,
+                           cdict,
+                           args['mongo_uri'])
 
 """
 for blob in [b for b in gm_blob_data.find()]:
