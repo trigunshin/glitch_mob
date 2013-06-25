@@ -51,9 +51,11 @@ for cur in companies:
     cdict[cur['cid']] = cur
     cdict[cur['symb']] = cur
 
-for blob in [b for b in gm_blob_data.find().limit(1)]:
-#for blob in [b for b in gm_blob_data.find()]:
-    insert_blob_data(blob,
+#for blob in [b for b in gm_blob_data.find().limit(1)]:
+all_blobs = [b for b in gm_blob_data.find()]
+print "loaded all blobs to memory, processing tasks..."
+for blob in all_blobs:
+    insert_blob_data.delay(blob,
                      get_blob_companies(blob),
                      get_blob_fields(blob),
                      field_dict,
