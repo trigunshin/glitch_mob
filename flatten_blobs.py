@@ -52,7 +52,7 @@ for cur in companies:
     cdict[cur['symb']] = cur
 
 #for blob in [b for b in gm_blob_data.find().limit(1)]:
-#all_blobs = [b for b in gm_blob_data.find()]
+all_blobs = [b for b in gm_blob_data.find()]
 print "loaded all blobs to memory, processing tasks..."
 for blob in all_blobs:
     # company or field failure means there weren't values
