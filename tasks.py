@@ -80,3 +80,52 @@ def process_request(url,
     jtext = requests.get(url).text
     coll.insert(json.loads(jtext))
     return (True, url, json)
+
+@celery.task
+def insert_blob_data(blob,
+                     blob_companies,
+                     blob_fields,
+                     field_category_map,
+                     cid_symb_map,
+
+                     db_url,
+                     db_port=27017,
+                     db_name='glitch_mob',
+                     annual_coll_name='annual',
+                     quarterly_coll_name='quarterly'):
+    c = MongoClient(host=db_url,
+                    port=db_port)
+    gm_db = c[db_name]
+    annual_coll = gm_db[annual_coll_name]
+    quarterly_coll = gm_db[quarterly_coll_name]
+
+    for cid in [cur['id'] for cur in blob_companies]:
+        try:
+            for field in blob_fields:
+                to_insert = {}
+                to_insert.update(field)
+                to_insert['category'] = field_category_map[field['id']]['category']
+
+                field_data = blob[cid][field['id']]['data']
+                try:
+                    # check year length to ignore a misc '1' field
+                    for year in (year for year in field_data.iterkeys() if len(year) > 3):
+                        for time, value in field_data[year].items():
+                            if time == "year":  # annual data
+                                ins = {'value':value, 'period':time, 'year':year, 'symb':cid_symb_map[cid]['symb']}
+                                ins.update(to_insert)
+                                annual_coll.insert(ins)
+                            else:  #quarter data
+                                ins = {'value':value, 'period':time, 'year':year, 'symb':cid_symb_map[cid]['symb']}
+                                ins.update(to_insert)
+                                quarterly_coll.insert(ins)
+                except AttributeError, e:
+                    # empty data fields are actually [], not {}...
+                    #print 'error:', e
+                    #print 'field_data:', field_data
+                    continue
+        except AttributeError,e:
+            # empty metric fields are actually [], not {}...
+            #print 'error:', e
+            #print 'fields:', blob['metrics']
+            continue

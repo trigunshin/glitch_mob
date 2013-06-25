@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from runme import celery
 from itertools import islice, chain
+from tasks import insert_blob_data
 import json
 import requests
 import sys
@@ -44,13 +45,22 @@ field_dict = getFieldDict(gm_fields)
 # make dict of companies keyed by cid or symb
 companies = [company for company in gm_tix.find()]
 cdict = {}
-cids = []
+#cids = []
 for cur in companies:
-    cids.append(cur['cid'])
+    #cids.append(cur['cid'])
     cdict[cur['cid']] = cur
     cdict[cur['symb']] = cur
 
-#for blob in [b for b in gm_blob_data.find().limit(1)]:
+for blob in [b for b in gm_blob_data.find().limit(1)]:
+#for blob in [b for b in gm_blob_data.find()]:
+    insert_blob_data(blob,
+                     get_blob_companies(blob),
+                     get_blob_fields(blob),
+                     field_dict,
+                     cdict,
+                     args['mongo_uri'])
+
+"""
 for blob in [b for b in gm_blob_data.find()]:
     for cid in [cur_cmpny['id'] for cur_cmpny in get_blob_companies(blob)]:
         try:
@@ -65,11 +75,11 @@ for blob in [b for b in gm_blob_data.find()]:
                     for year in (year for year in field_data.iterkeys() if len(year) > 3):
                         for time, value in field_data[year].items():
                             if time == "year":  # annual data
-                                ins = {'value':value, 'period':time, 'year':year}
+                                ins = {'value':value, 'period':time, 'year':year, 'symb':cdict[cid]['symb']}
                                 ins.update(to_insert)
                                 gm_annual.insert(ins)
                             else:  #quarter data
-                                ins = {'value':value, 'period':time, 'year':year}
+                                ins = {'value':value, 'period':time, 'year':year, 'symb':cdict[cid]['symb']}
                                 ins.update(to_insert)
                                 gm_quarterly.insert(ins)
                 except AttributeError, e:
