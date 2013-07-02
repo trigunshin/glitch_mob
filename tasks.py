@@ -114,7 +114,7 @@ def insert_blob_data(blob,
                 try:
                     # check year length to ignore a misc '1' field
                     for year in (int(year) for year in field_data.iterkeys() if len(year) > 3):
-                        for time, value in field_data[year].items():
+                        for time, value in field_data[str(year)].items():
 
                             if time == "year":  # annual data
                                 ins = {'value':value, 'period':time, 'year':year, 'symb':cid_symb_map[cid]['symb']}
