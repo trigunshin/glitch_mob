@@ -106,11 +106,16 @@ def insert_blob_data(blob,
                 to_insert.update(field)
                 to_insert['category'] = field_category_map[field['id']]['category']
 
+                to_insert['field_id'] = int(to_insert['id'])
+                del to_insert['id']
+
+
                 field_data = blob[cid][field['id']]['data']
                 try:
                     # check year length to ignore a misc '1' field
-                    for year in (year for year in field_data.iterkeys() if len(year) > 3):
+                    for year in (int(year) for year in field_data.iterkeys() if len(year) > 3):
                         for time, value in field_data[year].items():
+
                             if time == "year":  # annual data
                                 ins = {'value':value, 'period':time, 'year':year, 'symb':cid_symb_map[cid]['symb']}
                                 ins.update(to_insert)
