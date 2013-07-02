@@ -61,7 +61,7 @@ for blob in all_blobs:
         blob_fields = get_blob_fields(blob)
     except AttributeError, e:
         continue
-    insert_blob_data.delay(blob,
+    insert_blob_data(blob,
                            blob_companies,
                            blob_fields,
                            field_dict,
